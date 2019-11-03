@@ -1,0 +1,219 @@
+<html>
+  <head>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.min.js" integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="crossorigin="anonymous"></script>
+   <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+   <script type="text/javascript">
+ 
+
+    var token;  // access token을 저장하기 위한 변수
+    var aar = [];
+    var bar = [];
+
+    var requestTokenAwareApi = function(callback, args){
+
+    var appId = "eLAqLDOsFc4xSwSV";     // 변경해야 함
+    var secret = "KVagQ07ar3gr61H7";    // 변경해야 함
+    var uName = "khw11044";              // 변경해야 함
+    var pw = "@iotmaker21";               // 변경해야 함
+    //App ID, Secret, 계정아이디, 계정 비밀번호를 기반으로 access token 획득
+
+    $.ajax('https://iotmakers.kt.com/oauth/token', {
+         method: 'POST',
+         xhrFields: { withCredentials: false },
+         headers: { 'Authorization': 'Basic ' + btoa(appId + ':' + secret)},
+         data: { grant_type: 'password',
+             username: uName,        
+             password: pw       
+         },
+
+        success: function(result) {
+            token = result.access_token;    // 성공시, access token 저장
+        },
+        error: function(xhr,status,error){
+            console.log(xhr);
+        }
+    });
+};
+
+requestTokenAwareApi(); // access token 획득위한 코드 수행
+
+setTimeout(function() { // 0.3초 후에 invokeAPI() 수행
+    invokeAPI();        }, 300);
+
+var invokeAPI = function() {
+    // 디바이스 조회 URI
+    var API_URI = '/api/v1/streams/khw110D1571323504523/log?period=2880&count=20';
+
+    $.ajax('https://iotmakers.kt.com' + API_URI, {
+
+        method: 'GET',
+        headers: { 'Authorization': 'Bearer ' + token},
+        contentType: "application/json",
+        dataType:"json",
+
+        success: function (data, status, xhr) {
+            setDataList(data.data);  // 성공시, 데이터 출력을 위한 함수 호출
+            setData(data.data);
+            setData2(data.data);
+        },
+        error: function(xhr,status,e){
+            alert("error");
+        }
+    });
+};
+// 데이터 출력을 위한 함수
+var setDataList = function(data){
+
+    data.forEach(function(v){
+      var tr = document.createElement("tr");
+
+        var td1 = document.createElement("td");
+
+        var td2 = document.createElement("td");
+
+        var td3 = document.createElement("td");
+
+        var td4 = document.createElement("td");
+
+        var td5 = document.createElement("td");
+
+        td1.innerText = v.occDt;
+        td2.innerText = v.attributes.WaterLevel;
+    
+        if(v.attributes.WaterLevel<50){
+            td3.innerText = "ON";
+            td3.style.color="green"
+        }
+        else{
+            td3.innerText = "OFF";
+        }
+
+        if(v.attributes.WaterLevel>=50 && v.attributes.WaterLevel<100){
+            td4.innerText = "ON";
+            td4.style.color="#fff000"
+        }
+
+        else{
+            td4.innerText = "OFF";
+        }
+
+        if(v.attributes.WaterLevel >=100){
+            td5.innerText = "ON";
+            td5.style.color="red"
+        }
+        else{
+            td5.innerText = "OFF";
+        }
+        tr.appendChild(td1);
+        tr.appendChild(td2);
+        tr.appendChild(td3);
+        tr.appendChild(td4);
+        tr.appendChild(td5);
+
+        $("table").append(tr);
+        
+    })
+    }
+
+
+var setData = function(data){
+    data.forEach(function(v){
+      aar.push(v.occDt);
+    })
+}
+
+var setData2 = function(data){
+    data.forEach(function(v){
+      bar.push(v.attributes.WaterLevel);
+    })
+}
+
+for(var i =0; i<10; i++){
+  console.log(Number(aar[i]));
+  console.log(Number(bar[i]));
+}
+
+setTimeout(function() {
+    drawChart2();
+}, 500);
+
+      google.charts.load('current', {'packages':['corechart']});
+      google.charts.setOnLoadCallback(drawChart2);
+
+      function drawChart2() {
+        var data2 = new google.visualization.arrayToDataTable([
+          ['시간', '수심', ''],
+          [aar[9], bar[9],0],
+          [aar[8], bar[8],0],
+          [aar[7], bar[7],0],
+          [aar[6], bar[6],0],
+          [aar[5], bar[5],0],
+          [aar[4], bar[4],0],
+          [aar[3], bar[3],0],
+          [aar[2], bar[2],0],
+          [aar[1], bar[1],0],
+          [aar[0], bar[0],0],
+          
+        ]);
+
+        var options = {
+          title: '강 수심',
+          curveType: 'function',
+          legend: { position: 'bottom' }
+        };
+
+        var chart2 = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+        chart2.draw(data2, options);
+      }
+    </script>
+    </script>
+  </head>
+  <body>
+    
+
+    <style>
+      table, th, td {
+            border: 1px solid black;
+            text-align: center;
+            }
+    #header {
+      background-color:black;
+      color:white;
+      text-align:center;
+      padding:5px;
+    }
+    #curve_chart {
+      line-height:30px;
+      background-color:#eeeeee;
+      height:300px;
+      width:100px;
+      float:left;
+      padding:5px;
+    }
+    #chart{
+      width:350px;
+      float:left;
+      padding:10px;
+    }
+
+    </style>
+
+
+    <div id="header">
+      <h1> 강 수심 탐지기</h1>
+    </div>
+    <div id="curve_chart" style="width: 700px; height: 300px"></div>
+    <hr>
+     <table>
+            <tr style="background-color:lightgrey">
+                <th> 측정 시간(최신순) </th>
+                <th> 수심 값 </th>
+                <th> 안전 </th>
+                <th> 경고 </th>
+                <th> 위험 </th>
+            </tr>
+        </table>
+  </body>
+</html>
