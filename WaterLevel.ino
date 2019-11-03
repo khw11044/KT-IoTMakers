@@ -1,7 +1,7 @@
 #include <Arduino.h>
 #include <SPI.h>
 #include "IoTMakers.h"
-#include "Shield_Wrapper_WL.h"
+#include "Shield_Wrapper.h"
 #include "Timer.h"
 
 /*
