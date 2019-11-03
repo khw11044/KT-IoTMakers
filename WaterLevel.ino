@@ -21,8 +21,8 @@ void init_shield()
 {
   sdcard_deselect();
   
-  const char* WIFI_SSID = "iptime";
-  const char* WIFI_PASS = "01034797777";
+  const char* WIFI_SSID = "write your wifi_ssid";
+  const char* WIFI_PASS = "write your wifi_pass";
   g_shield.begin(WIFI_SSID, WIFI_PASS);
 
   g_shield.print();
@@ -34,9 +34,9 @@ IoTMakers
 */
 IoTMakers g_im;
 
-const char deviceID[]   = "khw110D1571323504523";
-const char authnRqtNo[] = "h77s1b6ls";
-const char extrSysID[]  = "OPEN_TCP_001PTL001_1000007731";
+const char deviceID[]   = "kt iotmakers's deviceID";
+const char authnRqtNo[] = "xxxxxxxx";
+const char extrSysID[]  = "OPEN_TCP_001PTL00xxxxxxxx";
 
 void init_iotmakers()
 {
