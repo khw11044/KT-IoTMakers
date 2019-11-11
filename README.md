@@ -1,6 +1,9 @@
 # KT-IoTMakers
 River Flood Notification Service Using KT Platform - IoTMakers - with arduino mkr wifi 1010
 
+
+https://blog.naver.com/khw11044
+
 먼저 아두이노 MKR wifi 1010을 준비합니다. (아두이노가 와이파이 칩을 통해 무선랜에 접속할 수 있기떄문)
 Arduino IDE의 [스케치]-[라이브러리 포함하기]-[라이브러리 관리]
 라이브러리 매니저 검색창에 WIFININA를 입력하여 검색된 WIFININA라이브러리를 설치합니다.
